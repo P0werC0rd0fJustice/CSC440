@@ -143,6 +143,23 @@ def search():
     return render_template('search.html', form=form, search=None)
 
 
+@bp.route('/stats/')
+@protect
+def stats():
+    tags = current_wiki.get_tags()
+    stats_dict = {}
+    seq = range(len(tags.keys()))
+    for key in tags.keys():
+        stats_dict[key] = len(tags[key])
+
+    pages = current_wiki.index()
+    counts = []
+    tags = []
+    for page in pages:
+        counts += [len(page.tags)]
+        tags += [(len(page.tags.split(',')),page.tags)]
+    return render_template('stats.html', stats_dict=stats_dict, seq = seq, pages=pages, counts = counts, tags = tags)
+
 @bp.route('/user/login/', methods=['GET', 'POST'])
 def user_login():
     form = LoginForm()
